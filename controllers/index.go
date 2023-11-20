@@ -29,12 +29,12 @@ func (c *MainController) Post() {
 		return
 	}
 
-	file, header, err := c.GetFile("file")
+	uploadedFile, header, err := c.GetFile("file")
 	if err != nil {
 		c.Ctx.Output.SetStatus(500)
 		return
 	}
-	defer file.Close()
+	defer uploadedFile.Close()
 
 	uploadDir := "./uploads/"
 	err = os.MkdirAll(uploadDir, 0777)
@@ -45,14 +45,14 @@ func (c *MainController) Post() {
 
 	filePath := filepath.Join(uploadDir, header.Filename)
 
-	out, err := os.Create(filePath)
+	outputFile, err := os.Create(filePath)
 	if err != nil {
 		c.Ctx.Output.SetStatus(500)
 		return
 	}
-	defer out.Close()
+	defer outputFile.Close()
 
-	_, err = io.Copy(out, file)
+	_, err = io.Copy(outputFile, uploadedFile)
 	if err != nil {
 		c.Ctx.Output.SetStatus(500)
 		return
