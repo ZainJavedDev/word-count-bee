@@ -13,15 +13,14 @@ type MainController struct {
 }
 
 type Message struct {
-	FilePath string `json:"filepath"`
-	Routines int    `json:"routines"`
+	FilePath string `form:"filepath"`
+	Routines int    `form:"routines"`
 }
 
 func (c *MainController) Post() {
 
 	var message Message
-	decoder := json.NewDecoder(c.Ctx.Request.Body)
-	err := decoder.Decode(&message)
+	err := c.ParseForm(&message)
 	if err != nil {
 		c.Ctx.Output.SetStatus(500)
 		return
