@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	beego.Router("/api1", &controllers.MainController{})
+	beego.Router("/", &controllers.MainController{})
 }
