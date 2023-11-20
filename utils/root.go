@@ -14,7 +14,7 @@ func ProcessFile(filePath string, routines int) (CountsResult, int, time.Duratio
 	results := make(chan CountsResult, routines)
 
 	pwd, _ := os.Getwd()
-	file, err := os.Open(pwd + "/storage/" + filePath)
+	file, err := os.Open(pwd + "/" + filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
