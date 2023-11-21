@@ -2,11 +2,13 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 
 	"github.com/MrNi8mare/word-count-bee/utils"
+	"github.com/golang-jwt/jwt"
 
 	"github.com/astaxie/beego"
 )
@@ -16,11 +18,16 @@ type MainController struct {
 }
 
 type Message struct {
-	FilePath string `form:"file"`
-	Routines int    `form:"routines"`
+	Routines int `form:"routines"`
 }
 
 func (c *MainController) Post() {
+
+	tokenString := c.Ctx.Input.Header("Authorization")
+	if !validate(tokenString) {
+		c.Ctx.Output.SetStatus(401)
+		return
+	}
 
 	var message Message
 	err := c.ParseForm(&message)
@@ -74,4 +81,28 @@ func (c *MainController) Post() {
 	}
 
 	c.Ctx.Output.Body(jsonData)
+}
+
+func validate(tokenString string) bool {
+
+	hmacSampleSecret := []byte("secret")
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+
+		return hmacSampleSecret, nil
+	})
+
+	if err != nil {
+		return false
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok {
+		fmt.Println(claims["foo"], claims["nbf"])
+	} else {
+		return false
+	}
+	return true
 }
