@@ -25,6 +25,8 @@ func (c *MainController) Post() {
 
 	tokenString := c.Ctx.Input.Header("Authorization")
 	if !validate(tokenString) {
+		errorMessage := "Invalid or expired token."
+		c.Ctx.Output.Body([]byte(errorMessage))
 		c.Ctx.Output.SetStatus(401)
 		return
 	}
@@ -100,7 +102,9 @@ func validate(tokenString string) bool {
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
-		fmt.Println(claims["foo"], claims["nbf"])
+		fmt.Println(claims["foo"])
+		fmt.Println(claims["time"])
+		fmt.Println(claims["exp"])
 	} else {
 		return false
 	}

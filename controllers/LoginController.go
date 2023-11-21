@@ -55,10 +55,12 @@ func createResponse(tokenString string) []byte {
 
 func newToken() string {
 	hmacSampleSecret := []byte(utils.GoDotEnvVariable("JWT_SECRET"))
+	expirationTime := time.Now().Add(3600 * time.Second).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"foo":  "bar",
 		"time": time.Now().Unix(),
+		"exp":  expirationTime,
 	})
 
 	tokenString, err := token.SignedString(hmacSampleSecret)
