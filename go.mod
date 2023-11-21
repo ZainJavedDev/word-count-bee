@@ -6,6 +6,7 @@ require github.com/astaxie/beego v1.12.1
 
 require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/joho/godotenv v1.5.1
 	github.com/smartystreets/goconvey v1.6.4
 )
 

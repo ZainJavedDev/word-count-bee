@@ -85,7 +85,7 @@ func (c *MainController) Post() {
 
 func validate(tokenString string) bool {
 
-	hmacSampleSecret := []byte("secret")
+	hmacSampleSecret := []byte(utils.GoDotEnvVariable("JWT_SECRET"))
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {

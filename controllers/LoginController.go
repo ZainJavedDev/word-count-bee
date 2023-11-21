@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"github.com/MrNi8mare/word-count-bee/utils"
 	"time"
 
 	"github.com/astaxie/beego"
@@ -52,7 +53,7 @@ func createResponse(tokenString string) []byte {
 }
 
 func newToken() string {
-	hmacSampleSecret := []byte("secret")
+	hmacSampleSecret := []byte(utils.GoDotEnvVariable("JWT_SECRET"))
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"foo": "bar",
