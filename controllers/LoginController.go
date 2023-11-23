@@ -42,7 +42,7 @@ func (c *LoginController) Post() {
 
 	err = bcrypt.CompareHashAndPassword([]byte(userFromDB.Password), []byte(loginData.Password))
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("Error comparing the passwords:", err)
 		c.Ctx.Output.SetStatus(401)
 		errorMessage := "Invalid credentials. Please check your username and password."
 		c.Ctx.Output.Body([]byte(errorMessage))
