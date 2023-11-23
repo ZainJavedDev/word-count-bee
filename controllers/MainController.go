@@ -46,11 +46,6 @@ func (c *MainController) Post() {
 	defer uploadedFile.Close()
 
 	uploadDir := "./uploads/"
-	err = os.MkdirAll(uploadDir, 0777)
-	if err != nil {
-		c.Ctx.Output.SetStatus(500)
-		return
-	}
 
 	filePath := filepath.Join(uploadDir, header.Filename)
 
