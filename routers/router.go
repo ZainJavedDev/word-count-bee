@@ -16,5 +16,5 @@ import (
 func init() {
 	beego.Router("/upload", &controllers.MainController{})
 	beego.Router("/login", &controllers.LoginController{})
-	beego.Router("/test", &controllers.TestController{})
+	beego.Router("/signup", &controllers.SignupController{})
 }

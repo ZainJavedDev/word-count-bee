@@ -12,7 +12,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type TestController struct {
+type SignupController struct {
 	beego.Controller
 }
 
@@ -27,7 +27,7 @@ type SignupData struct {
 	Password string `form:"password"`
 }
 
-func (c *TestController) Post() {
+func (c *SignupController) Post() {
 
 	var signupData SignupData
 	if err := c.ParseForm(&signupData); err != nil {
