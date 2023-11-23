@@ -41,9 +41,13 @@ func (c *SignupController) Post() {
 	}
 	defer db.Close()
 
-	db.AutoMigrate(&models.User{})
-	db.Create(&models.User{Username: signupData.Username, Password: hashedPassword})
-
+	result := db.Create(&models.User{Username: signupData.Username, Password: hashedPassword})
+	if result.Error != nil {
+		c.Ctx.Output.SetStatus(401)
+		errorMessage := "User already exists!"
+		c.Ctx.Output.Body([]byte(errorMessage))
+		return
+	}
 	fmt.Println("User Created")
 
 	responseData := map[string]interface{}{
