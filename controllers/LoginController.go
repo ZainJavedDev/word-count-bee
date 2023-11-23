@@ -9,6 +9,7 @@ import (
 	"github.com/MrNi8mare/word-count-bee/models"
 	"github.com/MrNi8mare/word-count-bee/utils"
 	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/astaxie/beego"
 	"github.com/golang-jwt/jwt"
@@ -28,8 +29,9 @@ func (c *LoginController) Post() {
 	}
 
 	db := connectDB()
+	defer db.Close()
 	var userFromDB models.User
-	result := db.Where("username = ? AND password = ?", loginData.Username, loginData.Password).First(&userFromDB)
+	result := db.Where("username = ?", loginData.Username).First(&userFromDB)
 	if result.Error != nil {
 		fmt.Println("Error querying the database:", result.Error)
 		c.Ctx.Output.SetStatus(401)
@@ -37,8 +39,10 @@ func (c *LoginController) Post() {
 		c.Ctx.Output.Body([]byte(errorMessage))
 		return
 	}
-	if result.RecordNotFound() {
-		fmt.Println("No user found with the provided credentials")
+
+	err = bcrypt.CompareHashAndPassword([]byte(userFromDB.Password), []byte(loginData.Password))
+	if err != nil {
+		log.Fatal(err)
 		c.Ctx.Output.SetStatus(401)
 		errorMessage := "Invalid credentials. Please check your username and password."
 		c.Ctx.Output.Body([]byte(errorMessage))
@@ -90,6 +94,5 @@ func connectDB() *gorm.DB {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
 	return db
 }
