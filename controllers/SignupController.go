@@ -21,18 +21,27 @@ func (c *SignupController) Post() {
 
 	var signupData models.SignupData
 	if err := c.ParseForm(&signupData); err != nil {
+		c.Ctx.Output.SetStatus(500)
 		log.Fatal(err)
 	}
 
 	if signupData.Username == "" || signupData.Password == "" {
-		c.Ctx.Output.SetStatus(401)
-		errorMessage := "Username or Password cannot be empty"
-		c.Ctx.Output.Body([]byte(errorMessage))
+		c.Ctx.Output.SetStatus(400)
+		errorMessage := map[string]interface{}{
+			"message": "User already exists",
+		}
+		jsonData, err := json.Marshal(errorMessage)
+		if err != nil {
+			c.Ctx.Output.SetStatus(500)
+			log.Fatal(err)
+		}
+		c.Ctx.Output.Body(jsonData)
 		return
 	}
 
 	hashedPassword, err := HashPassword(signupData.Password)
 	if err != nil {
+		c.Ctx.Output.SetStatus(500)
 		log.Fatal(err)
 	}
 
@@ -44,21 +53,28 @@ func (c *SignupController) Post() {
 
 	db, err := gorm.Open("postgres", dbURI)
 	if err != nil {
+		c.Ctx.Output.SetStatus(500)
 		log.Fatal(err)
 	}
 	defer db.Close()
 
 	result := db.Create(&models.User{Username: signupData.Username, Password: hashedPassword})
 	if result.Error != nil {
-		c.Ctx.Output.SetStatus(401)
-		errorMessage := "Username already exists"
-		c.Ctx.Output.Body([]byte(errorMessage))
+		c.Ctx.Output.SetStatus(400)
+		errorMessage := map[string]interface{}{
+			"message": "User already exists",
+		}
+		jsonData, err := json.Marshal(errorMessage)
+		if err != nil {
+			c.Ctx.Output.SetStatus(500)
+			log.Fatal(err)
+		}
+		c.Ctx.Output.Body(jsonData)
 		return
 	}
-	fmt.Println("User Created")
 
 	responseData := map[string]interface{}{
-		"Status": "OK",
+		"message": "User created successfully!",
 	}
 
 	jsonData, err := json.Marshal(responseData)
