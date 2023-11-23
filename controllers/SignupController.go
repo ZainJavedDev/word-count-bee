@@ -26,7 +26,7 @@ func (c *SignupController) Post() {
 	if signupData.Username == "" || signupData.Password == "" {
 		c.Ctx.Output.SetStatus(400)
 		errorMessage := map[string]interface{}{
-			"message": "User already exists",
+			"message": "Username and password are required",
 		}
 		jsonData, err := json.Marshal(errorMessage)
 		if err != nil {
