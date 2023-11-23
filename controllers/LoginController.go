@@ -71,7 +71,7 @@ func newToken(username string) string {
 	expirationTime := time.Now().Add(3600 * time.Second).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": "username",
+		"username": username,
 		"time":     time.Now().Unix(),
 		"exp":      expirationTime,
 	})

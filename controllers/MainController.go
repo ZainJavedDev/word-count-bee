@@ -97,7 +97,7 @@ func validate(tokenString string) bool {
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
-		fmt.Println(claims["foo"])
+		fmt.Println(claims["username"])
 		fmt.Println(claims["time"])
 		fmt.Println(claims["exp"])
 	} else {
