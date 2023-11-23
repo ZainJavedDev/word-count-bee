@@ -3,12 +3,10 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/MrNi8mare/word-count-bee/models"
 	"github.com/MrNi8mare/word-count-bee/utils"
-	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/astaxie/beego"
@@ -28,7 +26,7 @@ func (c *LoginController) Post() {
 		return
 	}
 
-	db := connectDB()
+	db := utils.ConnectDB()
 	defer db.Close()
 	var userFromDB models.User
 	result := db.Where("username = ?", loginData.Username).First(&userFromDB)
@@ -81,18 +79,4 @@ func newToken(username string) string {
 		panic(err)
 	}
 	return tokenString
-}
-
-func connectDB() *gorm.DB {
-	dbHost := utils.GoDotEnvVariable("DB_HOST")
-	dbUser := utils.GoDotEnvVariable("DB_USER")
-	dbName := utils.GoDotEnvVariable("DB_NAME")
-	dbPassword := utils.GoDotEnvVariable("DB_PASSWORD")
-	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s password=%s", dbHost, dbUser, dbName, dbPassword)
-
-	db, err := gorm.Open("postgres", dbURI)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return db
 }

@@ -2,13 +2,11 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 
 	"github.com/MrNi8mare/word-count-bee/models"
 	"github.com/MrNi8mare/word-count-bee/utils"
 	"github.com/astaxie/beego"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -45,17 +43,7 @@ func (c *SignupController) Post() {
 		log.Fatal(err)
 	}
 
-	dbHost := utils.GoDotEnvVariable("DB_HOST")
-	dbUser := utils.GoDotEnvVariable("DB_USER")
-	dbName := utils.GoDotEnvVariable("DB_NAME")
-	dbPassword := utils.GoDotEnvVariable("DB_PASSWORD")
-	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s password=%s", dbHost, dbUser, dbName, dbPassword)
-
-	db, err := gorm.Open("postgres", dbURI)
-	if err != nil {
-		c.Ctx.Output.SetStatus(500)
-		log.Fatal(err)
-	}
+	db := utils.ConnectDB()
 	defer db.Close()
 
 	result := db.Create(&models.User{Username: signupData.Username, Password: hashedPassword})
