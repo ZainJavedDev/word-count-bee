@@ -3,7 +3,7 @@ package models
 type User struct {
 	ID       uint   `gorm:"primary_key"`
 	Username string `gorm:"unique;not null"`
-	Password string
+	Password string `gorm:"not null"`
 }
 
 type LoginData struct {
