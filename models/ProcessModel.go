@@ -2,6 +2,10 @@ package models
 
 import "time"
 
+type Message struct {
+	Routines int `form:"routines"`
+}
+
 type Process struct {
 	ID       uint          `gorm:"primary_key"`
 	Time     time.Duration `gorm:"not null"`
