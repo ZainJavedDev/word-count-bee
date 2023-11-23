@@ -74,7 +74,7 @@ func (c *LoginController) Post() {
 	}
 
 	c.Ctx.Output.SetStatus(200)
-	tokenString := newToken(loginData.Username)
+	tokenString := newToken(userFromDB.ID)
 	jsonData := createResponse(tokenString)
 	c.Ctx.Output.Body(jsonData)
 
@@ -90,14 +90,14 @@ func createResponse(tokenString string) []byte {
 	return jsonData
 }
 
-func newToken(username string) string {
+func newToken(UserID uint) string {
 	hmacSampleSecret := []byte(utils.GoDotEnvVariable("JWT_SECRET"))
 	expirationTime := time.Now().Add(3600 * time.Second).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": username,
-		"time":     time.Now().Unix(),
-		"exp":      expirationTime,
+		"user": UserID,
+		"time": time.Now().Unix(),
+		"exp":  expirationTime,
 	})
 
 	tokenString, err := token.SignedString(hmacSampleSecret)

@@ -22,7 +22,8 @@ type UploadController struct {
 func (c *UploadController) Post() {
 
 	tokenString := c.Ctx.Input.Header("Authorization")
-	if !validate(tokenString) {
+	userID, err := validate(tokenString)
+	if err != nil {
 		c.Ctx.Output.SetStatus(400)
 		errorMessage := map[string]interface{}{
 			"message": "Invalid or expired token.",
@@ -37,7 +38,7 @@ func (c *UploadController) Post() {
 	}
 
 	var message models.Message
-	err := c.ParseForm(&message)
+	err = c.ParseForm(&message)
 	if err != nil {
 		c.Ctx.Output.SetStatus(500)
 		return
@@ -105,10 +106,28 @@ func (c *UploadController) Post() {
 		return
 	}
 
+	db := utils.ConnectDB()
+	defer db.Close()
+
+	result := db.Create(&models.Process{FileName: header.Filename, Routines: message.Routines, Time: timeTaken, UserID: userID})
+	if result.Error != nil {
+		c.Ctx.Output.SetStatus(500)
+		errorMessage := map[string]interface{}{
+			"message": "Error while storing the process in the database",
+		}
+		jsonData, err := json.Marshal(errorMessage)
+		if err != nil {
+			c.Ctx.Output.SetStatus(500)
+			log.Fatal(err)
+		}
+		c.Ctx.Output.Body(jsonData)
+		return
+	}
+
 	c.Ctx.Output.Body(jsonData)
 }
 
-func validate(tokenString string) bool {
+func validate(tokenString string) (uint, error) {
 
 	hmacSampleSecret := []byte(utils.GoDotEnvVariable("JWT_SECRET"))
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -121,15 +140,18 @@ func validate(tokenString string) bool {
 	})
 
 	if err != nil {
-		return false
+		return 0, err
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
-		fmt.Println(claims["username"])
+
+		fmt.Println(claims["user"])
 		fmt.Println(claims["time"])
 		fmt.Println(claims["exp"])
+
+		return uint(claims["user"].(float64)), nil
+
 	} else {
-		return false
+		return 0, err
 	}
-	return true
 }
