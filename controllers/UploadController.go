@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 
+	"github.com/MrNi8mare/word-count-bee/models"
 	"github.com/MrNi8mare/word-count-bee/utils"
 	"github.com/golang-jwt/jwt"
 
@@ -15,10 +17,6 @@ import (
 
 type UploadController struct {
 	beego.Controller
-}
-
-type Message struct {
-	Routines int `form:"routines"`
 }
 
 func (c *UploadController) Post() {
@@ -31,10 +29,24 @@ func (c *UploadController) Post() {
 		return
 	}
 
-	var message Message
+	var message models.Message
 	err := c.ParseForm(&message)
 	if err != nil {
 		c.Ctx.Output.SetStatus(500)
+		return
+	}
+
+	if message.Routines <= 0 {
+		c.Ctx.Output.SetStatus(400)
+		errorMessage := map[string]interface{}{
+			"message": "Routines field is invalid",
+		}
+		jsonData, err := json.Marshal(errorMessage)
+		if err != nil {
+			c.Ctx.Output.SetStatus(500)
+			log.Fatal(err)
+		}
+		c.Ctx.Output.Body(jsonData)
 		return
 	}
 
