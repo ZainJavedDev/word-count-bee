@@ -24,6 +24,13 @@ func (c *SignupController) Post() {
 		log.Fatal(err)
 	}
 
+	if signupData.Username == "" || signupData.Password == "" {
+		c.Ctx.Output.SetStatus(401)
+		errorMessage := "Username or Password cannot be empty"
+		c.Ctx.Output.Body([]byte(errorMessage))
+		return
+	}
+
 	hashedPassword, err := HashPassword(signupData.Password)
 	if err != nil {
 		log.Fatal(err)
@@ -44,7 +51,7 @@ func (c *SignupController) Post() {
 	result := db.Create(&models.User{Username: signupData.Username, Password: hashedPassword})
 	if result.Error != nil {
 		c.Ctx.Output.SetStatus(401)
-		errorMessage := "User already exists!"
+		errorMessage := "Username already exists"
 		c.Ctx.Output.Body([]byte(errorMessage))
 		return
 	}
