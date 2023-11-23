@@ -23,9 +23,16 @@ func (c *UploadController) Post() {
 
 	tokenString := c.Ctx.Input.Header("Authorization")
 	if !validate(tokenString) {
-		errorMessage := "Invalid or expired token."
-		c.Ctx.Output.Body([]byte(errorMessage))
-		c.Ctx.Output.SetStatus(401)
+		c.Ctx.Output.SetStatus(400)
+		errorMessage := map[string]interface{}{
+			"message": "Invalid or expired token.",
+		}
+		jsonData, err := json.Marshal(errorMessage)
+		if err != nil {
+			c.Ctx.Output.SetStatus(500)
+			log.Fatal(err)
+		}
+		c.Ctx.Output.Body(jsonData)
 		return
 	}
 
@@ -52,7 +59,16 @@ func (c *UploadController) Post() {
 
 	uploadedFile, header, err := c.GetFile("file")
 	if err != nil {
-		c.Ctx.Output.SetStatus(500)
+		c.Ctx.Output.SetStatus(400)
+		errorMessage := map[string]interface{}{
+			"message": "No file uploaded",
+		}
+		jsonData, err := json.Marshal(errorMessage)
+		if err != nil {
+			c.Ctx.Output.SetStatus(500)
+			log.Fatal(err)
+		}
+		c.Ctx.Output.Body(jsonData)
 		return
 	}
 	defer uploadedFile.Close()
