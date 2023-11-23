@@ -14,7 +14,14 @@ import (
 )
 
 func init() {
-	beego.Router("/upload", &controllers.MainController{})
+	beego.Router("/upload", &controllers.UploadController{})
 	beego.Router("/login", &controllers.LoginController{})
 	beego.Router("/signup", &controllers.SignupController{})
 }
+
+// tests:
+// 1. Empty username or password in signup page
+// 2. Existing username in signup page
+// 3. Make sure the password is hashed in the database
+// 4. Wrong username or password in login page
+// 5. Generated token must have expiry time
