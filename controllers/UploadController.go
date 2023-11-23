@@ -124,6 +124,22 @@ func (c *UploadController) Post() {
 		return
 	}
 
+	result = db.Create(&models.ProcessData{LineCount: totalCounts.LineCount, WordsCount: totalCounts.WordsCount, VowelsCount: totalCounts.VowelsCount, PunctuationCount: totalCounts.PunctuationCount, ProcessID: result.Value.(*models.Process).ID})
+
+	if result.Error != nil {
+		c.Ctx.Output.SetStatus(500)
+		errorMessage := map[string]interface{}{
+			"message": "Error while storing the process data in the database",
+		}
+		jsonData, err := json.Marshal(errorMessage)
+		if err != nil {
+			c.Ctx.Output.SetStatus(500)
+			log.Fatal(err)
+		}
+		c.Ctx.Output.Body(jsonData)
+		return
+	}
+
 	c.Ctx.Output.Body(jsonData)
 }
 
