@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/MrNi8mare/word-count-bee/models"
 	"github.com/MrNi8mare/word-count-bee/utils"
 	"github.com/astaxie/beego"
 	"github.com/jinzhu/gorm"
@@ -16,20 +17,9 @@ type SignupController struct {
 	beego.Controller
 }
 
-type User struct {
-	ID       uint   `gorm:"primary_key"`
-	Username string `gorm:"unique;not null"`
-	Password string
-}
-
-type SignupData struct {
-	Username string `form:"username"`
-	Password string `form:"password"`
-}
-
 func (c *SignupController) Post() {
 
-	var signupData SignupData
+	var signupData models.SignupData
 	if err := c.ParseForm(&signupData); err != nil {
 		log.Fatal(err)
 	}
@@ -51,8 +41,8 @@ func (c *SignupController) Post() {
 	}
 	defer db.Close()
 
-	db.AutoMigrate(&User{})
-	db.Create(&User{Username: signupData.Username, Password: hashedPassword})
+	db.AutoMigrate(&models.User{})
+	db.Create(&models.User{Username: signupData.Username, Password: hashedPassword})
 
 	fmt.Println("User Created")
 
