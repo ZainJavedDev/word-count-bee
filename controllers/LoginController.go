@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/MrNi8mare/word-count-bee/models"
@@ -26,24 +26,50 @@ func (c *LoginController) Post() {
 		return
 	}
 
+	if loginData.Username == "" || loginData.Password == "" {
+		c.Ctx.Output.SetStatus(400)
+		errorMessage := map[string]interface{}{
+			"message": "Username and password are required",
+		}
+		jsonData, err := json.Marshal(errorMessage)
+		if err != nil {
+			c.Ctx.Output.SetStatus(500)
+			log.Fatal(err)
+		}
+		c.Ctx.Output.Body(jsonData)
+		return
+	}
+
 	db := utils.ConnectDB()
 	defer db.Close()
 	var userFromDB models.User
 	result := db.Where("username = ?", loginData.Username).First(&userFromDB)
 	if result.Error != nil {
-		fmt.Println("Error querying the database:", result.Error)
 		c.Ctx.Output.SetStatus(401)
-		errorMessage := "Invalid credentials. Please check your username and password."
-		c.Ctx.Output.Body([]byte(errorMessage))
+		errorMessage := map[string]interface{}{
+			"message": "Invalid credentials. Please check your username and password.",
+		}
+		jsonData, err := json.Marshal(errorMessage)
+		if err != nil {
+			c.Ctx.Output.SetStatus(500)
+			log.Fatal(err)
+		}
+		c.Ctx.Output.Body(jsonData)
 		return
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(userFromDB.Password), []byte(loginData.Password))
 	if err != nil {
-		fmt.Println("Error comparing the passwords:", err)
 		c.Ctx.Output.SetStatus(401)
-		errorMessage := "Invalid credentials. Please check your username and password."
-		c.Ctx.Output.Body([]byte(errorMessage))
+		errorMessage := map[string]interface{}{
+			"message": "Invalid credentials. Please check your username and password.",
+		}
+		jsonData, err := json.Marshal(errorMessage)
+		if err != nil {
+			c.Ctx.Output.SetStatus(500)
+			log.Fatal(err)
+		}
+		c.Ctx.Output.Body(jsonData)
 		return
 	}
 
