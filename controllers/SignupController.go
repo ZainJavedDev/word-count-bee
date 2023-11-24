@@ -29,17 +29,7 @@ func (c *SignupController) Post() {
 	}
 
 	if signupData.Username == "" || signupData.Password == "" {
-		c.Ctx.Output.SetStatus(400)
-		errorMessage := map[string]interface{}{
-			"message": "Username and password are required",
-		}
-		jsonData, err := json.Marshal(errorMessage)
-		if err != nil {
-			c.Ctx.Output.SetStatus(500)
-			log.Fatal(err)
-		}
-		c.Ctx.Output.Body(jsonData)
-		return
+		utils.CreateErrorResponse(&c.Controller, 400, "Username and password are required")
 	}
 
 	hashedPassword, err := HashPassword(signupData.Password)
@@ -53,17 +43,7 @@ func (c *SignupController) Post() {
 
 	result := db.Create(&models.User{Username: signupData.Username, Password: hashedPassword})
 	if result.Error != nil {
-		c.Ctx.Output.SetStatus(400)
-		errorMessage := map[string]interface{}{
-			"message": "User already exists",
-		}
-		jsonData, err := json.Marshal(errorMessage)
-		if err != nil {
-			c.Ctx.Output.SetStatus(500)
-			log.Fatal(err)
-		}
-		c.Ctx.Output.Body(jsonData)
-		return
+		utils.CreateErrorResponse(&c.Controller, 400, "User already exists")
 	}
 
 	responseData := map[string]interface{}{

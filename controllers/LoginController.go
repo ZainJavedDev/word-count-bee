@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"log"
 	"time"
 
 	"github.com/MrNi8mare/word-count-bee/models"
@@ -32,17 +31,8 @@ func (c *LoginController) Post() {
 	}
 
 	if loginData.Username == "" || loginData.Password == "" {
-		c.Ctx.Output.SetStatus(400)
-		errorMessage := map[string]interface{}{
-			"message": "Username and password are required",
-		}
-		jsonData, err := json.Marshal(errorMessage)
-		if err != nil {
-			c.Ctx.Output.SetStatus(500)
-			log.Fatal(err)
-		}
-		c.Ctx.Output.Body(jsonData)
-		return
+		errorMessage := "Username and password are required"
+		utils.CreateErrorResponse(&c.Controller, 400, errorMessage)
 	}
 
 	db := utils.ConnectDB()
@@ -50,32 +40,14 @@ func (c *LoginController) Post() {
 	var userFromDB models.User
 	result := db.Where("username = ?", loginData.Username).First(&userFromDB)
 	if result.Error != nil {
-		c.Ctx.Output.SetStatus(401)
-		errorMessage := map[string]interface{}{
-			"message": "Invalid credentials. Please check your username and password.",
-		}
-		jsonData, err := json.Marshal(errorMessage)
-		if err != nil {
-			c.Ctx.Output.SetStatus(500)
-			log.Fatal(err)
-		}
-		c.Ctx.Output.Body(jsonData)
-		return
+		errorMessage := "Invalid credentials. Please check your username and password."
+		utils.CreateErrorResponse(&c.Controller, 401, errorMessage)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(userFromDB.Password), []byte(loginData.Password))
 	if err != nil {
-		c.Ctx.Output.SetStatus(401)
-		errorMessage := map[string]interface{}{
-			"message": "Invalid credentials. Please check your username and password.",
-		}
-		jsonData, err := json.Marshal(errorMessage)
-		if err != nil {
-			c.Ctx.Output.SetStatus(500)
-			log.Fatal(err)
-		}
-		c.Ctx.Output.Body(jsonData)
-		return
+		errorMessage := "Invalid credentials. Please check your username and password."
+		utils.CreateErrorResponse(&c.Controller, 401, errorMessage)
 	}
 
 	c.Ctx.Output.SetStatus(200)
