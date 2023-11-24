@@ -23,6 +23,8 @@ func init() {
 
 	beego.Router("/processes", &controllers.ProcessController{})
 
+	beego.Router("/statistics", &controllers.StatisticsController{})
+
 }
 
 // tests:
