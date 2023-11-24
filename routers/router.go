@@ -14,10 +14,15 @@ import (
 )
 
 func init() {
-	beego.Router("/upload", &controllers.UploadController{})
 	beego.Router("/login", &controllers.LoginController{})
 	beego.Router("/signup", &controllers.SignupController{})
+
 	beego.Router("/migrate", &controllers.MigrationController{})
+
+	beego.Router("/upload", &controllers.UploadController{})
+
+	// beego.Router("/processes", &controllers.ProcessController{})
+
 }
 
 // tests:
