@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 
@@ -28,17 +27,7 @@ func (c *UploadController) Post() {
 	tokenString := c.Ctx.Input.Header("Authorization")
 	userID, err := validate(tokenString)
 	if err != nil {
-		c.Ctx.Output.SetStatus(400)
-		errorMessage := map[string]interface{}{
-			"message": "Invalid or expired token.",
-		}
-		jsonData, err := json.Marshal(errorMessage)
-		if err != nil {
-			c.Ctx.Output.SetStatus(500)
-			log.Fatal(err)
-		}
-		c.Ctx.Output.Body(jsonData)
-		return
+		utils.CreateErrorResponse(&c.Controller, 400, "Invalid or expired token.")
 	}
 
 	var message Message
@@ -49,32 +38,12 @@ func (c *UploadController) Post() {
 	}
 
 	if message.Routines <= 0 {
-		c.Ctx.Output.SetStatus(400)
-		errorMessage := map[string]interface{}{
-			"message": "Routines field is invalid",
-		}
-		jsonData, err := json.Marshal(errorMessage)
-		if err != nil {
-			c.Ctx.Output.SetStatus(500)
-			log.Fatal(err)
-		}
-		c.Ctx.Output.Body(jsonData)
-		return
+		utils.CreateErrorResponse(&c.Controller, 400, "Routines field is invalid")
 	}
 
 	uploadedFile, header, err := c.GetFile("file")
 	if err != nil {
-		c.Ctx.Output.SetStatus(400)
-		errorMessage := map[string]interface{}{
-			"message": "No file uploaded",
-		}
-		jsonData, err := json.Marshal(errorMessage)
-		if err != nil {
-			c.Ctx.Output.SetStatus(500)
-			log.Fatal(err)
-		}
-		c.Ctx.Output.Body(jsonData)
-		return
+		utils.CreateErrorResponse(&c.Controller, 400, "No file uploaded")
 	}
 	defer uploadedFile.Close()
 
@@ -115,33 +84,13 @@ func (c *UploadController) Post() {
 
 	result := db.Create(&models.Process{FileName: header.Filename, Routines: message.Routines, Time: timeTaken, UserID: userID})
 	if result.Error != nil {
-		c.Ctx.Output.SetStatus(500)
-		errorMessage := map[string]interface{}{
-			"message": "Error while storing the process in the database",
-		}
-		jsonData, err := json.Marshal(errorMessage)
-		if err != nil {
-			c.Ctx.Output.SetStatus(500)
-			log.Fatal(err)
-		}
-		c.Ctx.Output.Body(jsonData)
-		return
+		utils.CreateErrorResponse(&c.Controller, 500, "Error while storing the process in the database")
 	}
 
 	result = db.Create(&models.ProcessData{LineCount: totalCounts.LineCount, WordsCount: totalCounts.WordsCount, VowelsCount: totalCounts.VowelsCount, PunctuationCount: totalCounts.PunctuationCount, ProcessID: result.Value.(*models.Process).ID})
 
 	if result.Error != nil {
-		c.Ctx.Output.SetStatus(500)
-		errorMessage := map[string]interface{}{
-			"message": "Error while storing the process data in the database",
-		}
-		jsonData, err := json.Marshal(errorMessage)
-		if err != nil {
-			c.Ctx.Output.SetStatus(500)
-			log.Fatal(err)
-		}
-		c.Ctx.Output.Body(jsonData)
-		return
+		utils.CreateErrorResponse(&c.Controller, 500, "Error while storing the process data in the database")
 	}
 
 	c.Ctx.Output.Body(jsonData)
