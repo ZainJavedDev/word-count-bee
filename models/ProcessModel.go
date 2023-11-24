@@ -2,10 +2,12 @@ package models
 
 import (
 	"time"
+
+	"github.com/jinzhu/gorm"
 )
 
 type Process struct {
-	ID       uint          `gorm:"primary_key"`
+	gorm.Model
 	Time     time.Duration `gorm:"not null"`
 	UserID   uint          `gorm:"not null"`
 	FileName string        `gorm:"not null"`
@@ -15,7 +17,7 @@ type Process struct {
 }
 
 type ProcessData struct {
-	ID               uint `gorm:"primary_key"`
+	gorm.Model
 	LineCount        int  `gorm:"not null"`
 	WordsCount       int  `gorm:"not null"`
 	VowelsCount      int  `gorm:"not null"`

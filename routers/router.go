@@ -21,7 +21,7 @@ func init() {
 
 	beego.Router("/upload", &controllers.UploadController{})
 
-	// beego.Router("/processes", &controllers.ProcessController{})
+	beego.Router("/processes", &controllers.ProcessController{})
 
 }
 

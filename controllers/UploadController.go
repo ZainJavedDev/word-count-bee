@@ -2,14 +2,12 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 
 	"github.com/MrNi8mare/word-count-bee/models"
 	"github.com/MrNi8mare/word-count-bee/utils"
-	"github.com/golang-jwt/jwt"
 
 	"github.com/astaxie/beego"
 )
@@ -25,7 +23,7 @@ type Message struct {
 func (c *UploadController) Post() {
 
 	tokenString := c.Ctx.Input.Header("Authorization")
-	userID, err := validate(tokenString)
+	userID, err := utils.Validate(tokenString)
 	if err != nil {
 		utils.CreateErrorResponse(&c.Controller, 400, "Invalid or expired token.")
 	}
@@ -94,33 +92,4 @@ func (c *UploadController) Post() {
 	}
 
 	c.Ctx.Output.Body(jsonData)
-}
-
-func validate(tokenString string) (uint, error) {
-
-	hmacSampleSecret := []byte(utils.GoDotEnvVariable("JWT_SECRET"))
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
-
-		return hmacSampleSecret, nil
-	})
-
-	if err != nil {
-		return 0, err
-	}
-
-	if claims, ok := token.Claims.(jwt.MapClaims); ok {
-
-		fmt.Println(claims["user"])
-		fmt.Println(claims["time"])
-		fmt.Println(claims["exp"])
-
-		return uint(claims["user"].(float64)), nil
-
-	} else {
-		return 0, err
-	}
 }
