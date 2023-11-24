@@ -19,6 +19,10 @@ type UploadController struct {
 	beego.Controller
 }
 
+type Message struct {
+	Routines int `form:"routines"`
+}
+
 func (c *UploadController) Post() {
 
 	tokenString := c.Ctx.Input.Header("Authorization")
@@ -37,7 +41,7 @@ func (c *UploadController) Post() {
 		return
 	}
 
-	var message models.Message
+	var message Message
 	err = c.ParseForm(&message)
 	if err != nil {
 		c.Ctx.Output.SetStatus(500)

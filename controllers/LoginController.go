@@ -17,9 +17,14 @@ type LoginController struct {
 	beego.Controller
 }
 
+type LoginData struct {
+	Username string `form:"username"`
+	Password string `form:"password"`
+}
+
 func (c *LoginController) Post() {
 
-	var loginData models.LoginData
+	var loginData LoginData
 	err := c.ParseForm(&loginData)
 	if err != nil {
 		c.Ctx.Output.SetStatus(500)

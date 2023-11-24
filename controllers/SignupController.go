@@ -15,9 +15,14 @@ type SignupController struct {
 	beego.Controller
 }
 
+type SignupData struct {
+	Username string `form:"username"`
+	Password string `form:"password"`
+}
+
 func (c *SignupController) Post() {
 
-	var signupData models.SignupData
+	var signupData SignupData
 	if err := c.ParseForm(&signupData); err != nil {
 		c.Ctx.Output.SetStatus(500)
 		log.Fatal(err)
