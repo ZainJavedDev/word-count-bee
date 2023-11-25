@@ -9,20 +9,20 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type StatisticsController struct {
+type AdminStatisticsController struct {
 	beego.Controller
 }
 
-type FileStats struct {
-	Filename string `form:"filename"`
-}
-
-func (c *StatisticsController) Post() {
+func (c *AdminStatisticsController) Post() {
 
 	tokenString := c.Ctx.Input.Header("Authorization")
-	userID, _, err := utils.Validate(tokenString)
+	_, role, err := utils.Validate(tokenString)
 	if err != nil {
 		utils.CreateErrorResponse(&c.Controller, 400, "Invalid or expired token.")
+	}
+
+	if role != 1 {
+		utils.CreateErrorResponse(&c.Controller, 400, "You are not authorized to perform this action.")
 	}
 
 	db := utils.ConnectDB()
@@ -33,7 +33,7 @@ func (c *StatisticsController) Post() {
 		utils.CreateErrorResponse(&c.Controller, 400, "Invalid form data.")
 	}
 
-	rowCount, averageTime, err := getStatistics(db, userID, fileStats.Filename)
+	rowCount, averageTime, err := getAdminStatistics(db, fileStats.Filename)
 	if err != nil {
 		utils.CreateErrorResponse(&c.Controller, 404, err.Error())
 		return
@@ -48,10 +48,10 @@ func (c *StatisticsController) Post() {
 	c.ServeJSON()
 }
 
-func getStatistics(db *gorm.DB, userID uint, filename string) (int, float64, error) {
+func getAdminStatistics(db *gorm.DB, filename string) (int, float64, error) {
 
 	var processes []models.Process
-	err := db.Where("file_name = ? AND user_id = ?", filename, userID).Find(&processes).Error
+	err := db.Where("file_name = ?", filename).Find(&processes).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return 0, 0, err
 	}
@@ -65,7 +65,7 @@ func getStatistics(db *gorm.DB, userID uint, filename string) (int, float64, err
 	}
 
 	if rowCount == 0 {
-		return 0, 0, fmt.Errorf("no processes found for the specified file and user")
+		return 0, 0, fmt.Errorf("no processes found for the specified file")
 	}
 
 	averageTime := totalTime / float64(rowCount)

@@ -6,7 +6,7 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-func Validate(tokenString string) (uint, error) {
+func Validate(tokenString string) (uint, float64, error) {
 
 	hmacSampleSecret := []byte(GoDotEnvVariable("JWT_SECRET"))
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -19,7 +19,7 @@ func Validate(tokenString string) (uint, error) {
 	})
 
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
@@ -28,9 +28,9 @@ func Validate(tokenString string) (uint, error) {
 		fmt.Println(claims["time"])
 		fmt.Println(claims["exp"])
 
-		return uint(claims["user"].(float64)), nil
+		return uint(claims["user"].(float64)), claims["role"].(float64), nil
 
 	} else {
-		return 0, err
+		return 0, 0, err
 	}
 }

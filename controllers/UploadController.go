@@ -23,7 +23,7 @@ type Message struct {
 func (c *UploadController) Post() {
 
 	tokenString := c.Ctx.Input.Header("Authorization")
-	userID, err := utils.Validate(tokenString)
+	userID, _, err := utils.Validate(tokenString)
 	if err != nil {
 		utils.CreateErrorResponse(&c.Controller, 400, "Invalid or expired token.")
 	}
