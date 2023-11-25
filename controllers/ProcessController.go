@@ -20,8 +20,7 @@ func (c *ProcessController) Post() {
 	db := utils.ConnectDB()
 	defer db.Close()
 	userProcesses := []models.Process{}
-	db.Where("user_id = ?", userID).Omit("users").Find(&userProcesses)
-	// db.Where("user_id = ?", userID).Preload("User").Find(&userProcesses)
+	db.Preload("ProcessData").Where("user_id = ?", userID).Find(&userProcesses)
 
 	c.Data["json"] = userProcesses
 	c.ServeJSON()

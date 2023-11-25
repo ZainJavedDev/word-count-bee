@@ -13,7 +13,8 @@ type Process struct {
 	FileName string        `gorm:"not null"`
 	Routines int           `gorm:"not null"`
 
-	User User `gorm:"foreignkey:UserID"`
+	User        User        `gorm:"foreignkey:UserID"`
+	ProcessData ProcessData `gorm:"foreignkey:ProcessID"`
 }
 
 type ProcessData struct {
@@ -23,6 +24,4 @@ type ProcessData struct {
 	VowelsCount      int  `gorm:"not null"`
 	PunctuationCount int  `gorm:"not null"`
 	ProcessID        uint `gorm:"not null"`
-
-	Process Process `gorm:"foreignkey:ProcessID"`
 }
