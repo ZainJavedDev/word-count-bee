@@ -15,7 +15,7 @@ type MigrationController struct {
 func (c *MigrationController) Get() {
 
 	db := utils.ConnectDB()
-	// db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Process{}, &models.ProcessData{})
 
 	responseData := map[string]interface{}{

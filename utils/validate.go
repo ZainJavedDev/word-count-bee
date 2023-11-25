@@ -24,10 +24,6 @@ func Validate(tokenString string) (uint, float64, error) {
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
 
-		fmt.Println(claims["user"])
-		fmt.Println(claims["time"])
-		fmt.Println(claims["exp"])
-
 		return uint(claims["user"].(float64)), claims["role"].(float64), nil
 
 	} else {

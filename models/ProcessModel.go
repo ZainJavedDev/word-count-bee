@@ -13,7 +13,7 @@ type Process struct {
 	FileName string        `gorm:"not null"`
 	Routines int           `gorm:"not null"`
 
-	User        User        `gorm:"foreignkey:UserID"`
+	User        User        `gorm:"foreignkey:UserID" json:"-"`
 	ProcessData ProcessData `gorm:"foreignkey:ProcessID"`
 }
 
