@@ -8,10 +8,10 @@ import (
 
 func main() {
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
-		AllowOrigins:     []string{"http://localhost:89"},
+		AllowOrigins:     []string{"http://localhost:89", "https://editor.swagger.io"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Authorization", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Content-Type"},
-		ExposeHeaders:    []string{"Content-Length", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Content-Type"},
+		AllowHeaders:     []string{"Origin", "Authorization", "Access-Control-Allow-Origin"},
+		ExposeHeaders:    []string{"Access-Control-Allow-Origin"},
 		AllowCredentials: true,
 	}))
 	beego.Run()
