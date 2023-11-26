@@ -241,16 +241,6 @@ paths:
                     type: integer
                     example: 3                  
                 
-        "400":
-          description: No file uploaded
-          content:
-            application/json:
-              schema:
-                type: "object"
-                properties:
-                  message:
-                    type: "string"
-                    example: "No file uploaded"
 
         "401":
           description: Invalid token
@@ -263,9 +253,8 @@ paths:
                     type: "string"
                     example: "Invalid or expired token."
 
-                
-        "422":
-          description: Invalid routines field
+        "404":
+          description: No result found
           content:
             application/json:
               schema:
@@ -273,7 +262,102 @@ paths:
                 properties:
                   message:
                     type: "string"
-                    example: "Routines field is invalid"
+                    example: "no processes found for the specified file and user"
+
+  /processes:
+    post:
+      summary: "Find processes for a user"
+      tags:
+        - Process
+      parameters:
+      - in: header
+        name: Authorization
+        description: "Access token for authentication"
+        required: true
+        schema:
+          type: string
+      
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    ID:
+                      type: integer
+                    CreatedAt:
+                      type: string
+                      format: date-time
+                    UpdatedAt:
+                      type: string
+                      format: date-time
+                    DeletedAt:
+                      type: string
+                      format: date-time
+                      nullable: true
+                    Time:
+                      type: integer
+                    UserID:
+                      type: integer
+                    FileName:
+                      type: string
+                    Routines:
+                      type: integer
+                    ProcessData:
+                      type: object
+                      properties:
+                        ID:
+                          type: integer
+                        CreatedAt:
+                          type: string
+                          format: date-time
+                        UpdatedAt:
+                          type: string
+                          format: date-time
+                        DeletedAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        LineCount:
+                          type: integer
+                        WordsCount:
+                          type: integer
+                        VowelsCount:
+                          type: integer
+                        PunctuationCount:
+                          type: integer
+                        ProcessID:
+                          type: integer
+
+                                              
+                
+
+        "401":
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Invalid or expired token."
+
+        "404":
+          description: No result found
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "no processes found for the specified file and user"
+
 
   /admin/login:
     post:
