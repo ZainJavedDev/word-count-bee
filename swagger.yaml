@@ -7,7 +7,7 @@ info:
   description: "Upload files to extract a concise summary"
 
 servers:
-  - url: "http://localhost:8080"
+  - url: "http://localhost:8080/api/v1"
 
 paths:
 
@@ -34,15 +34,169 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserCreated'
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "User created successfully"
+        "400":
+          description: Username or password field empty
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Username and password are required"
 
         "409":
           description: Conflict - User already exists
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserExists'
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "User already exists"
         
+  
+  /login:
+    post:
+      summary: "Login a user"
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "User logged in successfully!"
+                  token:
+                    type: "string"
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDA5ODUwNTYsInJvbGUiOjAsInRpbWUiOjE3MDA5ODE0NTYsInVzZXIiOjB9.tfXrz-FBTO-NvA5XrxLF095cXDr0RdSh8aVHQA9j5gw"
+                
+        "400":
+          description: Username or password field empty
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Username and password are required"
+                
+        "401":
+          description: Username or password incorrect
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Invalid credentials. Please check your username and password."
+
+  
+  /upload:
+    post:
+      summary: "Upload a file to process"
+      tags:
+        - Process
+      parameters:
+      - in: header
+        name: Authorization
+        description: "Access token for authentication"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                routines:
+                  type: integer
+      
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  routines:
+                    type: integer
+                    example: 2
+                  timeTaken:
+                    type: string
+                    example: "231.956µs"
+                  totalCounts:
+                    type: object
+                    properties:
+                      LineCount:
+                        type: integer
+                        example: 101
+                      WordsCount:
+                        type: integer
+                        example: 280
+                      VowelsCount:
+                        type: integer
+                        example: 1065
+                      PunctuationCount:
+                        type: integer
+                        example: 637
+
+                  
+                
+        "400":
+          description: No file uploaded
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "No file uploaded"
+                
+        "422":
+          description: Invalid routines field
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Routines field is invalid"
+
+
 
   /migrate:
     get:
@@ -59,21 +213,25 @@ paths:
 
 components:
   schemas:
+  
     Migration:
       type: "object"
       properties:
         message:
           type: "string"
           example: "Migrations completed successfully"
-    UserCreated:
+        
+    ErrorModel:
       type: "object"
       properties:
         message:
           type: "string"
-          example: "User created successfully"
-    UserExists:
-      type: "object"
-      properties:
-        message:
-          type: "string"
-          example: "User already exists"
+          example: "Error Message"
+        
+        
+        
+                                      # END FILE
+                                      
+                                      
+                                      
+                                      

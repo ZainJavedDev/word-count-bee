@@ -35,7 +35,7 @@ func (c *UploadController) Post() {
 	}
 
 	if message.Routines <= 0 {
-		utils.CreateErrorResponse(&c.Controller, 400, "Routines field is invalid")
+		utils.CreateErrorResponse(&c.Controller, 422, "Routines field is invalid")
 	}
 
 	uploadedFile, header, err := c.GetFile("file")
