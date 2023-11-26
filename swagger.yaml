@@ -1,0 +1,78 @@
+openapi: 3.0.3
+
+info:
+  version: "1.0.0"
+  title: "File Processor API"
+  description: "Upload files to extract a concise summary"
+
+servers:
+  - url: "http://localhost:8080"
+
+paths:
+
+  /signup:
+    post:
+      summary: "Create a new user"
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCreated'
+
+        "409":
+          description: Conflict - User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserExists'
+        
+
+  /migrate:
+    get:
+      summary: "Migrate the database"
+      tags:
+        - Database
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Migration'
+
+components:
+  schemas:
+    Migration:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+          example: "Migrations completed successfully"
+    UserCreated:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+          example: "User created successfully"
+    UserExists:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+          example: "User already exists"
