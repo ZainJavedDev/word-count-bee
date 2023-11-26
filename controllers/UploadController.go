@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -22,6 +23,13 @@ type Message struct {
 func (c *UploadController) Post() {
 
 	tokenString := c.Ctx.Input.Header("Authorization")
+	if tokenString == "" {
+		utils.CreateErrorResponse(&c.Controller, 400, "Invalid or expired token.")
+	}
+
+	log.Default().Println("token: ")
+
+	log.Default().Println(tokenString)
 	userID, _, err := utils.Validate(tokenString)
 	if err != nil {
 		utils.CreateErrorResponse(&c.Controller, 400, "Invalid or expired token.")

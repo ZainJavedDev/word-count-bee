@@ -17,7 +17,7 @@ func init() {
 
 	adminPrefix := apiPrefix + "/admin"
 
-	beego.Router(adminPrefix+"/login", &controllers.LoginController{})
+	beego.Router(adminPrefix+"/login", &controllers.AdminLoginController{})
 	beego.Router(adminPrefix+"/statistics", &controllers.AdminStatisticsController{})
 	beego.Router(adminPrefix+"/processes", &controllers.AdminProcessController{})
 

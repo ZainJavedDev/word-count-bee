@@ -196,6 +196,59 @@ paths:
                     type: "string"
                     example: "Routines field is invalid"
 
+  /admin/login:
+    post:
+      summary: "Login an admin user"
+      tags:
+        - Admin
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "User logged in successfully!"
+                  token:
+                    type: "string"
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDA5ODUwNTYsInJvbGUiOjAsInRpbWUiOjE3MDA5ODE0NTYsInVzZXIiOjB9.tfXrz-FBTO-NvA5XrxLF095cXDr0RdSh8aVHQA9j5gw"
+                
+        "400":
+          description: Username or password field empty
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Username and password are required"
+                
+        "401":
+          description: Username or password incorrect
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Invalid credentials. Please check your username and password."
 
 
   /migrate:
