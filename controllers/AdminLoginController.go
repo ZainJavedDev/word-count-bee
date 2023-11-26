@@ -50,7 +50,7 @@ func (c *AdminLoginController) Post() {
 
 	responseData := map[string]string{
 		"token":   tokenString,
-		"message": "User logged in successfully!",
+		"message": "Admin logged in successfully!",
 	}
 
 	c.Data["json"] = responseData

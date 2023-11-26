@@ -171,8 +171,75 @@ paths:
                       PunctuationCount:
                         type: integer
                         example: 637
+  
+        "400":
+          description: No file uploaded
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "No file uploaded"
+        "401":
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Invalid or expired token."
+                
+        "422":
+          description: Invalid routines field
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Routines field is invalid"
 
-                  
+  /statistics:
+    post:
+      summary: "Find statistics for a file"
+      tags:
+        - Process
+      parameters:
+      - in: header
+        name: Authorization
+        description: "Access token for authentication"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                filename:
+                  type: string
+      
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  averageTime:
+                    type: number
+                    example: 0.00031381000000000003
+                  rowCount:
+                    type: integer
+                    example: 3                  
                 
         "400":
           description: No file uploaded
@@ -184,6 +251,18 @@ paths:
                   message:
                     type: "string"
                     example: "No file uploaded"
+
+        "401":
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Invalid or expired token."
+
                 
         "422":
           description: Invalid routines field
