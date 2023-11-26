@@ -2,21 +2,24 @@ package routers
 
 import (
 	"github.com/MrNi8mare/word-count-bee/controllers"
-
 	"github.com/astaxie/beego"
 )
 
 func init() {
-	beego.Router("/login", &controllers.LoginController{})
-	beego.Router("/signup", &controllers.SignupController{})
+	apiPrefix := "/api/v1"
 
-	beego.Router("/upload", &controllers.UploadController{})
-	beego.Router("/processes", &controllers.ProcessController{})
-	beego.Router("/statistics", &controllers.StatisticsController{})
+	beego.Router(apiPrefix+"/login", &controllers.LoginController{})
+	beego.Router(apiPrefix+"/signup", &controllers.SignupController{})
 
-	beego.Router("/admin/login", &controllers.LoginController{})
-	beego.Router("/admin/statistics", &controllers.AdminStatisticsController{})
-	beego.Router("/admin/processes", &controllers.AdminProcessController{})
+	beego.Router(apiPrefix+"/upload", &controllers.UploadController{})
+	beego.Router(apiPrefix+"/processes", &controllers.ProcessController{})
+	beego.Router(apiPrefix+"/statistics", &controllers.StatisticsController{})
 
-	beego.Router("/migrate", &controllers.MigrationController{})
+	adminPrefix := apiPrefix + "/admin"
+
+	beego.Router(adminPrefix+"/login", &controllers.LoginController{})
+	beego.Router(adminPrefix+"/statistics", &controllers.AdminStatisticsController{})
+	beego.Router(adminPrefix+"/processes", &controllers.AdminProcessController{})
+
+	beego.Router(apiPrefix+"/migrate", &controllers.MigrationController{})
 }
