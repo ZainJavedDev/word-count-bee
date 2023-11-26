@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
-
 	"github.com/MrNi8mare/word-count-bee/models"
 	"github.com/MrNi8mare/word-count-bee/utils"
 	"github.com/astaxie/beego"
@@ -22,11 +20,6 @@ func (c *MigrationController) Get() {
 		"message": "Migration completed successfully!",
 	}
 
-	jsonData, err := json.Marshal(responseData)
-	if err != nil {
-		c.Ctx.Output.SetStatus(500)
-		return
-	}
-
-	c.Ctx.Output.Body(jsonData)
+	c.Data["json"] = responseData
+	c.ServeJSON()
 }

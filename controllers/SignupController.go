@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
 	"log"
 
 	"github.com/MrNi8mare/word-count-bee/models"
@@ -50,13 +49,8 @@ func (c *SignupController) Post() {
 		"message": "User created successfully!",
 	}
 
-	jsonData, err := json.Marshal(responseData)
-	if err != nil {
-		c.Ctx.Output.SetStatus(500)
-		return
-	}
-
-	c.Ctx.Output.Body(jsonData)
+	c.Data["json"] = responseData
+	c.ServeJSON()
 }
 
 func HashPassword(password string) (string, error) {

@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
 	"io"
 	"os"
 	"path/filepath"
@@ -65,18 +64,6 @@ func (c *UploadController) Post() {
 	totalCounts, routines, timeTaken := utils.ProcessFile(filePath, message.Routines)
 	timeTakenString := timeTaken.String()
 
-	responseData := map[string]interface{}{
-		"totalCounts": totalCounts,
-		"routines":    routines,
-		"timeTaken":   timeTakenString,
-	}
-
-	jsonData, err := json.Marshal(responseData)
-	if err != nil {
-		c.Ctx.Output.SetStatus(500)
-		return
-	}
-
 	db := utils.ConnectDB()
 	defer db.Close()
 
@@ -91,5 +78,12 @@ func (c *UploadController) Post() {
 		utils.CreateErrorResponse(&c.Controller, 500, "Error while storing the process data in the database")
 	}
 
-	c.Ctx.Output.Body(jsonData)
+	responseData := map[string]interface{}{
+		"totalCounts": totalCounts,
+		"routines":    routines,
+		"timeTaken":   timeTakenString,
+	}
+
+	c.Data["json"] = responseData
+	c.ServeJSON()
 }

@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/MrNi8mare/word-count-bee/models"
@@ -52,19 +51,15 @@ func (c *LoginController) Post() {
 
 	c.Ctx.Output.SetStatus(200)
 	tokenString := newToken(userFromDB.ID, userFromDB.Role)
-	jsonData := createResponse(tokenString)
-	c.Ctx.Output.Body(jsonData)
 
-}
-
-func createResponse(tokenString string) []byte {
-	jsonData, err := json.Marshal(map[string]string{
-		"token": tokenString,
-	})
-	if err != nil {
-		panic(err)
+	responseData := map[string]string{
+		"token":   tokenString,
+		"message": "User logged in successfully!",
 	}
-	return jsonData
+
+	c.Data["json"] = responseData
+	c.ServeJSON()
+
 }
 
 func newToken(userID uint, userRole int) string {
