@@ -9,6 +9,7 @@ info:
 servers:
   - url: "http://localhost:8080/api/v1"
 
+
 paths:
 
   /signup:
@@ -119,16 +120,13 @@ paths:
   
   /upload:
     post:
+
+      security:
+        - api_key: []
+
       summary: "Upload a file to process"
       tags:
         - Process
-      parameters:
-      - in: header
-        name: Authorization
-        description: "Access token for authentication"
-        required: true
-        schema:
-          type: string
       requestBody:
         required: true
         content:
@@ -206,16 +204,11 @@ paths:
 
   /statistics:
     post:
+      security:
+        - api_key: []
       summary: "Find statistics for a file"
       tags:
         - Process
-      parameters:
-      - in: header
-        name: Authorization
-        description: "Access token for authentication"
-        required: true
-        schema:
-          type: string
       requestBody:
         required: true
         content:
@@ -260,16 +253,12 @@ paths:
 
   /processes:
     post:
+      security:
+        - api_key: []
+
       summary: "Find processes for a user"
       tags:
         - Process
-      parameters:
-      - in: header
-        name: Authorization
-        description: "Access token for authentication"
-        required: true
-        schema:
-          type: string
       
       responses:
         "200":
@@ -305,6 +294,9 @@ paths:
 
   /admin/login:
     post:
+      security:
+        - api_key: []
+      
       summary: "Login an admin user"
       tags:
         - Admin
@@ -360,16 +352,12 @@ paths:
 
   /admin/processes:
     post:
+      security:
+        - api_key: []
+
       summary: "Find processes for all users"
       tags:
         - Admin
-      parameters:
-      - in: header
-        name: Authorization
-        description: "Access token for authentication"
-        required: true
-        schema:
-          type: string
       
       responses:
         "200":
@@ -406,16 +394,12 @@ paths:
 
   /admin/statistics:
     post:
+      security:
+        - api_key: []
+
       summary: "Find statistics for a file"
       tags:
         - Admin
-      parameters:
-      - in: header
-        name: Authorization
-        description: "Access token for authentication"
-        required: true
-        schema:
-          type: string
       requestBody:
         required: true
         content:
@@ -458,20 +442,29 @@ paths:
                     example: "no processes found for the specified file"
 
 
-  /migrate:
-    get:
-      summary: "Migrate the database"
-      tags:
-        - Database
-      responses:
-        200:
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Migration'
+  # /migrate:
+  #   get:
+  #     security:
+  #       - api_key: []
+  #     summary: "Migrate the database"
+  #     tags:
+  #       - Database
+  #     responses:
+  #       200:
+  #         description: Successful operation
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/Migration'
 
 components:
+
+  securitySchemes:
+    api_key:
+      type: apiKey
+      in: header
+      name: Authorization
+      
   schemas:
 
     Statistics:
