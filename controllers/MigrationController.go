@@ -12,6 +12,16 @@ type MigrationController struct {
 
 func (c *MigrationController) Get() {
 
+	tokenString := c.Ctx.Input.Header("Authorization")
+	_, role, err := utils.Validate(tokenString)
+	if err != nil {
+		utils.CreateErrorResponse(&c.Controller, 400, "Invalid or expired token.")
+	}
+
+	if role != 1 {
+		utils.CreateErrorResponse(&c.Controller, 400, "You are not authorized to perform this action.")
+	}
+
 	db := utils.ConnectDB()
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Process{}, &models.ProcessData{})
