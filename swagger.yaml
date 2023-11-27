@@ -442,20 +442,20 @@ paths:
                     example: "no processes found for the specified file"
 
 
-  # /migrate:
-  #   get:
-  #     security:
-  #       - api_key: []
-  #     summary: "Migrate the database"
-  #     tags:
-  #       - Database
-  #     responses:
-  #       200:
-  #         description: Successful operation
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/Migration'
+  /migrate:
+    get:
+      security:
+        - api_key: []
+      summary: "Migrate the database"
+      tags:
+        - Database
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Migration'
 
 components:
 
