@@ -122,7 +122,7 @@ paths:
     post:
 
       security:
-        - api_key: []
+        - jwt_auth: []
 
       summary: "Upload a file to process"
       tags:
@@ -205,7 +205,7 @@ paths:
   /statistics:
     post:
       security:
-        - api_key: []
+        - jwt_auth: []
       summary: "Find statistics for a file"
       tags:
         - Process
@@ -254,7 +254,7 @@ paths:
   /processes:
     post:
       security:
-        - api_key: []
+        - jwt_auth: []
 
       summary: "Find processes for a user"
       tags:
@@ -295,7 +295,7 @@ paths:
   /admin/login:
     post:
       security:
-        - api_key: []
+        - jwt_auth: []
       
       summary: "Login an admin user"
       tags:
@@ -353,7 +353,7 @@ paths:
   /admin/processes:
     post:
       security:
-        - api_key: []
+        - jwt_auth: []
 
       summary: "Find processes for all users"
       tags:
@@ -395,7 +395,7 @@ paths:
   /admin/statistics:
     post:
       security:
-        - api_key: []
+        - jwt_auth: []
 
       summary: "Find statistics for a file"
       tags:
@@ -445,7 +445,7 @@ paths:
   /migrate:
     get:
       security:
-        - api_key: []
+        - jwt_auth: []
       summary: "Migrate the database"
       tags:
         - Admin
@@ -460,7 +460,7 @@ paths:
 components:
 
   securitySchemes:
-    api_key:
+    jwt_auth:
       type: apiKey
       in: header
       name: Authorization
