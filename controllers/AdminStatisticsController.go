@@ -40,8 +40,8 @@ func (c *AdminStatisticsController) Post() {
 	}
 
 	responseData := map[string]interface{}{
-		"rowCount":    rowCount,
-		"averageTime": averageTime,
+		"processCount": rowCount,
+		"averageTime":  averageTime,
 	}
 
 	c.Data["json"] = responseData
