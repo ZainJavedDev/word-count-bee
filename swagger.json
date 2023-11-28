@@ -421,11 +421,6 @@
     },
     "/admin/login": {
       "post": {
-        "security": [
-          {
-            "jwt_auth": []
-          }
-        ],
         "summary": "Login an admin user",
         "tags": [
           "Admin"
@@ -508,7 +503,7 @@
       "post": {
         "security": [
           {
-            "jwt_auth": []
+            "admin_auth": []
           }
         ],
         "summary": "Find processes for all users",
@@ -565,7 +560,7 @@
       "post": {
         "security": [
           {
-            "jwt_auth": []
+            "admin_auth": []
           }
         ],
         "summary": "Find statistics for a file",
@@ -637,7 +632,7 @@
       "get": {
         "security": [
           {
-            "jwt_auth": []
+            "admin_auth": []
           }
         ],
         "summary": "Migrate the database",
@@ -662,6 +657,11 @@
   "components": {
     "securitySchemes": {
       "jwt_auth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      },
+      "admin_auth": {
         "type": "apiKey",
         "in": "header",
         "name": "Authorization"
