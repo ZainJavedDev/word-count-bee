@@ -294,8 +294,8 @@ paths:
 
   /admin/login:
     post:
-      security:
-        - jwt_auth: []
+      # security:
+      #   - jwt_auth: []
       
       summary: "Login an admin user"
       tags:
@@ -353,7 +353,7 @@ paths:
   /admin/processes:
     post:
       security:
-        - jwt_auth: []
+        - admin_auth: []
 
       summary: "Find processes for all users"
       tags:
@@ -395,7 +395,7 @@ paths:
   /admin/statistics:
     post:
       security:
-        - jwt_auth: []
+        - admin_auth: []
 
       summary: "Find statistics for a file"
       tags:
@@ -445,7 +445,7 @@ paths:
   /migrate:
     get:
       security:
-        - jwt_auth: []
+        - admin_auth: []
       summary: "Migrate the database"
       tags:
         - Admin
@@ -461,6 +461,11 @@ components:
 
   securitySchemes:
     jwt_auth:
+      type: apiKey
+      in: header
+      name: Authorization
+
+    admin_auth:
       type: apiKey
       in: header
       name: Authorization
