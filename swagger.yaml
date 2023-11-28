@@ -4,7 +4,7 @@ openapi: 3.0.3
 info:
   version: "1.0.0"
   title: "File Processor API"
-  description: "Upload files to extract a concise summary"
+  description: "Word-Count is used to count the number of words, punctuations, lines and vowels in a text file. User can specify the file path and number of goroutines used for the calculations. Built in beego MVC framework, postgres and gorm."
 
 servers:
   - url: "http://localhost:8080/api/v1"
