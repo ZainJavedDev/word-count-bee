@@ -24,8 +24,3 @@ Word-Count is used to count the number of words, punctuations, lines and vowels 
 
 * Run using command `bee run`
 
-
-## License
-
-Word Processor API is licensed under apache 2.0 standard license
-([https://www.apache.org/licenses/LICENSE-2.0.html](https://www.apache.org/licenses/LICENSE-2.0.html)).
