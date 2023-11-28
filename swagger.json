@@ -3,7 +3,7 @@
   "info": {
     "version": "1.0.0",
     "title": "File Processor API",
-    "description": "Upload files to extract a concise summary"
+    "description": "Word-Count is used to count the number of words, punctuations, lines and vowels in a text file. User can specify the file path and number of goroutines used for the calculations. Built in beego MVC framework, postgres and gorm."
   },
   "servers": [
     {
@@ -171,7 +171,7 @@
       "post": {
         "security": [
           {
-            "api_key": []
+            "jwt_auth": []
           }
         ],
         "summary": "Upload a file to process",
@@ -294,7 +294,7 @@
       "post": {
         "security": [
           {
-            "api_key": []
+            "jwt_auth": []
           }
         ],
         "summary": "Find statistics for a file",
@@ -366,7 +366,7 @@
       "post": {
         "security": [
           {
-            "api_key": []
+            "jwt_auth": []
           }
         ],
         "summary": "Find processes for a user",
@@ -423,7 +423,7 @@
       "post": {
         "security": [
           {
-            "api_key": []
+            "jwt_auth": []
           }
         ],
         "summary": "Login an admin user",
@@ -508,7 +508,7 @@
       "post": {
         "security": [
           {
-            "api_key": []
+            "jwt_auth": []
           }
         ],
         "summary": "Find processes for all users",
@@ -565,7 +565,7 @@
       "post": {
         "security": [
           {
-            "api_key": []
+            "jwt_auth": []
           }
         ],
         "summary": "Find statistics for a file",
@@ -637,7 +637,7 @@
       "get": {
         "security": [
           {
-            "api_key": []
+            "jwt_auth": []
           }
         ],
         "summary": "Migrate the database",
@@ -661,7 +661,7 @@
   },
   "components": {
     "securitySchemes": {
-      "api_key": {
+      "jwt_auth": {
         "type": "apiKey",
         "in": "header",
         "name": "Authorization"
