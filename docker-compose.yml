@@ -2,16 +2,16 @@
 version: '3'
 
 services:
-  golang-app:
+  golang-application:
     build:
       context: .
       dockerfile: Dockerfile.golang
     ports:
       - "8080:8080"
     depends_on:
-      - postgres-db_1_1
+      - postgres-database
 
-  postgres-db_1_1:
+  postgres-database:
     build:
       context: .
       dockerfile: Dockerfile.postgres

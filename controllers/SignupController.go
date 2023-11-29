@@ -42,7 +42,7 @@ func (c *SignupController) Post() {
 
 	result := db.Create(&models.User{Username: signupData.Username, Password: hashedPassword})
 	if result.Error != nil {
-		utils.CreateErrorResponse(&c.Controller, 409, "User already exists")
+		utils.CreateErrorResponse(&c.Controller, 409, "Error creating user")
 	}
 
 	responseData := map[string]interface{}{
