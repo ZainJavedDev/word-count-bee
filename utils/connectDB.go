@@ -12,7 +12,7 @@ func ConnectDB() *gorm.DB {
 	dbUser := GoDotEnvVariable("DB_USER")
 	dbName := GoDotEnvVariable("DB_NAME")
 	dbPassword := GoDotEnvVariable("DB_PASSWORD")
-	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s password=%s", dbHost, dbUser, dbName, dbPassword)
+	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s password=%s port=%s sslmode=disable host=postgres-db_1_1", dbHost, dbUser, dbName, dbPassword, "5432")
 
 	db, err := gorm.Open("postgres", dbURI)
 	if err != nil {
