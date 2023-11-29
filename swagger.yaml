@@ -444,8 +444,6 @@ paths:
 
   /migrate:
     get:
-      security:
-        - admin_auth: []
       summary: "Migrate the database"
       tags:
         - Admin
