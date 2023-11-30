@@ -24,4 +24,5 @@ func init() {
 	beego.Router(adminPrefix+"/processes", &controllers.AdminProcessController{})
 
 	beego.Router(apiPrefix+"/migrate", &controllers.MigrationController{})
+	beego.Router(apiPrefix+"/role", &controllers.MigrationController{})
 }
