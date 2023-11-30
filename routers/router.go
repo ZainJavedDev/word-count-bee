@@ -10,6 +10,7 @@ func init() {
 
 	beego.Router(apiPrefix+"/login", &controllers.LoginController{})
 	beego.Router(apiPrefix+"/signup", &controllers.SignupController{})
+	beego.Router(apiPrefix+"/refresh", &controllers.RefreshTokenController{})
 
 	beego.Router(apiPrefix+"/upload", &controllers.UploadController{})
 	beego.Router(apiPrefix+"/processes", &controllers.ProcessController{})
@@ -18,6 +19,7 @@ func init() {
 	adminPrefix := apiPrefix + "/admin"
 
 	beego.Router(adminPrefix+"/login", &controllers.AdminLoginController{})
+	beego.Router(adminPrefix+"/refresh", &controllers.RefreshTokenController{})
 	beego.Router(adminPrefix+"/statistics", &controllers.AdminStatisticsController{})
 	beego.Router(adminPrefix+"/processes", &controllers.AdminProcessController{})
 

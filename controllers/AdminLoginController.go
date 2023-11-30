@@ -46,7 +46,7 @@ func (c *AdminLoginController) Post() {
 	}
 
 	c.Ctx.Output.SetStatus(200)
-	tokenString := newToken(userFromDB.ID, userFromDB.Role)
+	tokenString := newRefreshToken(userFromDB.ID, userFromDB.Role)
 
 	responseData := map[string]string{
 		"token":   tokenString,

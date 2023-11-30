@@ -50,11 +50,11 @@ func (c *LoginController) Post() {
 	}
 
 	c.Ctx.Output.SetStatus(200)
-	tokenString := newToken(userFromDB.ID, userFromDB.Role)
+	tokenString := newRefreshToken(userFromDB.ID, userFromDB.Role)
 
 	responseData := map[string]string{
-		"token":   tokenString,
-		"message": "User logged in successfully!",
+		"refresh token": tokenString,
+		"message":       "User logged in successfully!",
 	}
 
 	c.Data["json"] = responseData
@@ -62,7 +62,7 @@ func (c *LoginController) Post() {
 
 }
 
-func newToken(userID uint, userRole int) string {
+func newRefreshToken(userID uint, userRole int) string {
 	hmacSampleSecret := []byte(utils.GoDotEnvVariable("JWT_SECRET"))
 	expirationTime := time.Now().Add(3600 * time.Second).Unix()
 
