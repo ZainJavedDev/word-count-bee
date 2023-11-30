@@ -15,7 +15,7 @@ type RoleChangeUser struct {
 }
 
 func (c *RoleChangeController) Post() {
-	dbKey := c.Ctx.Input.Header("Key")
+	dbKey := c.Ctx.Input.Header("Authorization")
 
 	envDBKey := utils.GoDotEnvVariable("DB_ACCESS_KEY")
 

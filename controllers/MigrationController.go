@@ -12,7 +12,7 @@ type MigrationController struct {
 
 func (c *MigrationController) Post() {
 
-	dbKey := c.Ctx.Input.Header("Key")
+	dbKey := c.Ctx.Input.Header("Authorization")
 
 	envDBKey := utils.GoDotEnvVariable("DB_ACCESS_KEY")
 

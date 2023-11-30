@@ -444,9 +444,11 @@ paths:
 
   /migrate:
     get:
+      security:
+        - db_key: []
       summary: "Migrate the database"
       tags:
-        - Admin
+        - Database
       responses:
         200:
           description: Successful operation
@@ -454,6 +456,79 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Migration'
+        
+        422:
+          description: Invalid key
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Invalid key"
+  
+  /role:
+    post:
+      security:
+        - db_key: []
+      summary: "Make a user admin"
+      tags:
+        - Database
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Role changed successfully!"
+        
+        400:
+          description: Invalid data
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Invalid form data!"
+        
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "User not found"
+                    
+        422:
+          description: Invalid key
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Invalid key"
+          
 
 components:
 
@@ -464,6 +539,11 @@ components:
       name: Authorization
 
     admin_auth:
+      type: apiKey
+      in: header
+      name: Authorization
+      
+    db_key:
       type: apiKey
       in: header
       name: Authorization
