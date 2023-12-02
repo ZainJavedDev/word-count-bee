@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"io"
 	"log"
+	"mime/multipart"
 	"os"
 	"path/filepath"
 
@@ -51,6 +53,16 @@ func (c *UploadController) Post() {
 		utils.CreateErrorResponse(&c.Controller, 400, "No file uploaded")
 	}
 	defer uploadedFile.Close()
+	go startProcess(header, uploadedFile, message, userID)
+	responseData := map[string]interface{}{
+		"message": "File uploaded successfully",
+	}
+
+	c.Data["json"] = responseData
+	c.ServeJSON()
+}
+
+func startProcess(header *multipart.FileHeader, uploadedFile multipart.File, message Message, userID uint) {
 
 	uploadDir := "./uploads/"
 
@@ -58,15 +70,13 @@ func (c *UploadController) Post() {
 
 	outputFile, err := os.Create(filePath)
 	if err != nil {
-		c.Ctx.Output.SetStatus(500)
-		return
+		fmt.Println(err)
 	}
 	defer outputFile.Close()
 
 	_, err = io.Copy(outputFile, uploadedFile)
 	if err != nil {
-		c.Ctx.Output.SetStatus(500)
-		return
+		fmt.Println(err)
 	}
 
 	totalCounts, routines, timeTaken := utils.ProcessFile(filePath, message.Routines)
@@ -77,13 +87,13 @@ func (c *UploadController) Post() {
 
 	result := db.Create(&models.Process{FileName: header.Filename, Routines: message.Routines, Time: timeTaken, UserID: userID})
 	if result.Error != nil {
-		utils.CreateErrorResponse(&c.Controller, 500, "Error while storing the process in the database")
+		fmt.Println(result.Error)
 	}
 
 	result = db.Create(&models.ProcessData{LineCount: totalCounts.LineCount, WordsCount: totalCounts.WordsCount, VowelsCount: totalCounts.VowelsCount, PunctuationCount: totalCounts.PunctuationCount, ProcessID: result.Value.(*models.Process).ID})
 
 	if result.Error != nil {
-		utils.CreateErrorResponse(&c.Controller, 500, "Error while storing the process data in the database")
+		fmt.Println(result.Error)
 	}
 
 	responseData := map[string]interface{}{
@@ -92,6 +102,5 @@ func (c *UploadController) Post() {
 		"timeTaken":   timeTakenString,
 	}
 
-	c.Data["json"] = responseData
-	c.ServeJSON()
+	fmt.Println(responseData)
 }
