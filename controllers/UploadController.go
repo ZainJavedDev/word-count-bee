@@ -64,6 +64,7 @@ func (c *UploadController) Post() {
 
 func startProcess(header *multipart.FileHeader, uploadedFile multipart.File, message Message, userID uint) {
 
+	defer uploadedFile.Close()
 	uploadDir := "./uploads/"
 
 	filePath := filepath.Join(uploadDir, header.Filename)
