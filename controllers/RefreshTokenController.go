@@ -32,7 +32,7 @@ func (c *RefreshTokenController) Post() {
 
 func newAccessToken(userID uint, userRole int) string {
 	hmacSampleSecret := []byte(utils.GoDotEnvVariable("JWT_SECRET"))
-	expirationTime := time.Now().Add(3600 * time.Second).Unix()
+	expirationTime := time.Now().Add(3600000 * time.Second).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user": userID,

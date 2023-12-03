@@ -13,6 +13,8 @@ func init() {
 	beego.Router(apiPrefix+"/refresh", &controllers.RefreshTokenController{})
 
 	beego.Router(apiPrefix+"/upload", &controllers.UploadController{})
+	beego.Router(apiPrefix+"/result", &controllers.ResultController{})
+
 	beego.Router(apiPrefix+"/processes", &controllers.ProcessController{})
 	beego.Router(apiPrefix+"/statistics", &controllers.StatisticsController{})
 

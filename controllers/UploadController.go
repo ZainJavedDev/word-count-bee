@@ -7,9 +7,11 @@ import (
 	"mime/multipart"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/MrNi8mare/word-count-bee/models"
 	"github.com/MrNi8mare/word-count-bee/utils"
+	"github.com/gorilla/websocket"
 
 	"github.com/astaxie/beego"
 )
@@ -18,8 +20,22 @@ type UploadController struct {
 	beego.Controller
 }
 
+type ResultController struct {
+	beego.Controller
+}
+
 type Message struct {
 	Routines int `form:"routines"`
+}
+
+var (
+	resultChannel = make(chan map[string]interface{})
+	mu            sync.Mutex
+)
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
 }
 
 func (c *UploadController) Post() {
@@ -52,17 +68,28 @@ func (c *UploadController) Post() {
 	if err != nil {
 		utils.CreateErrorResponse(&c.Controller, 400, "No file uploaded")
 	}
-	defer uploadedFile.Close()
-	go startProcess(header, uploadedFile, message, userID)
-	responseData := map[string]interface{}{
+	// defer uploadedFile.Close()
+
+	go func() {
+
+		responseData := startProcess(header, uploadedFile, message, userID, resultChannel)
+		fmt.Println("line76")
+
+		mu.Lock()
+		resultChannel <- responseData
+		fmt.Println("line80")
+		mu.Unlock()
+	}()
+	successMessage := map[string]interface{}{
 		"message": "File uploaded successfully",
 	}
 
-	c.Data["json"] = responseData
+	c.Data["json"] = successMessage
 	c.ServeJSON()
+
 }
 
-func startProcess(header *multipart.FileHeader, uploadedFile multipart.File, message Message, userID uint) {
+func startProcess(header *multipart.FileHeader, uploadedFile multipart.File, message Message, userID uint, resultChannel chan map[string]interface{}) map[string]interface{} {
 
 	defer uploadedFile.Close()
 	uploadDir := "./uploads/"
@@ -102,6 +129,25 @@ func startProcess(header *multipart.FileHeader, uploadedFile multipart.File, mes
 		"routines":    routines,
 		"timeTaken":   timeTakenString,
 	}
-
 	fmt.Println(responseData)
+	return responseData
+}
+
+func (c *ResultController) Get() {
+	fmt.Println("line135")
+	mu.Lock()
+	fmt.Println("line137")
+
+	conn, err := upgrader.Upgrade(c.Ctx.ResponseWriter, c.Ctx.Request, nil)
+	if err != nil {
+		beego.Error("Error upgrading to WebSocket:", err)
+		return
+	}
+	fmt.Println("line144")
+
+	responseData := <-resultChannel
+	conn.WriteJSON(responseData)
+	fmt.Println("line149")
+
+	mu.Unlock()
 }
